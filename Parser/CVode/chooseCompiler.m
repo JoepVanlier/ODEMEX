@@ -1,9 +1,9 @@
 %% Mandatory Settings
 
 % compiler = 1;  % lccwin32
-% compiler = 2; % msvc
+compiler = 2; % msvc (recommended for windows)
 % compiler = 3; % GCC under windows
-compiler = 4; % GCC under linux
+% compiler = 4; % GCC under linux
 
 % Don't forget to call mex -setup when you switch compiler (not needed for
 % GCC)
@@ -39,9 +39,9 @@ end
 %% Microsoft Visual C++ 2008
 if ( compiler == 2 )
     
-    % If you use MSVC, adjust these to the appropriate location \/
-    vsroot = 'D:\Program Files\Microsoft Visual Studio 9.0';
-    netroot = 'C:\WINDOWS\Microsoft.NET';
+    % If you use MSVC, adjust these to the appropriate location (if necessary) \/
+    cc          = mex.getCompilerConfigurations('C++','Selected');
+    vsroot      = cc.Location;
     
     %  \/ Base your choice of optimisations here
     %* P2: G6 is fastest (official builds are G6)

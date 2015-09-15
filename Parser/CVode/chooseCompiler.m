@@ -1,9 +1,9 @@
 %% Mandatory Settings
 
-compiler = 1;  % lccwin32
+% compiler = 1;  % lccwin32
 % compiler = 2; % msvc
 % compiler = 3; % GCC under windows
-% compiler = 4; % GCC under linux
+compiler = 4; % GCC under linux
 
 % Don't forget to call mex -setup when you switch compiler (not needed for
 % GCC)

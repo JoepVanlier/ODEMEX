@@ -2,6 +2,7 @@
 
 chooseCompiler;
 mkdir( [cvodeDir '/tmp'] );
+mkdir( [cvodeDir '/lib'] );
 
 % List of directories to include in the compilation
 list = { 'cvodes' 'nvec_ser' 'sundials' };

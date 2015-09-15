@@ -1,13 +1,49 @@
 #include "../dxdt.h"
 
+realtype addTwo( realtype in1 , realtype  in2 ) {
+
+	realtype y ;
+	;
+	
+	y =in1 +in2;
+	/**/
+	/*Joep Vanlier, 2011*/
+	/**/
+	/*Licensing:*/
+	/*Copyright (C) 2009-2011 Joep Vanlier. All rights*/
+	/*reserved.*/
+	/**/
+	/*Contact:joep.vanlier@gmail.com*/
+	/**/
+	/*This file is part of the puaMAT.*/
+	/**/
+	/*puaMAT is free software: you can redistribute it*/
+	/*and/or modify it under the terms of the GNU General*/
+	/*Public License as published by the Free Software*/
+	/*Foundation, either version 3 of the License, or (at*/
+	/*your option) any later version.*/
+	/**/
+	/*puaMAT is distributed in the hope that it will be*/
+	/*useful, but WITHOUT ANY WARRANTY; without even the*/
+	/*implied warranty of MERCHANTABILITY or FITNESS FOR A*/
+	/*PARTICULAR PURPOSE.  See the GNU General Public*/
+	/*License for more details.*/
+	/**/
+	/*You should have received a copy of the GNU General*/
+	/*Public License along with puaMAT.  If not, see*/
+	/*http://www.gnu.org/licenses/*/
+	/**/
+	return y;
+
+}
+
 
 
 int rhs( realtype t, N_Vector y, N_Vector ydot, void *f_data ) {
 
 	struct mData *data = ( struct mData * ) f_data;
 
-	realtype a1 , a2 , alf , order , rho ;
-	int k1 ;
+	realtype c1 , dx , p1 , p2 , p3 , temp1 , temp2 , u1 , x1 , x2 ;
 
 	realtype *stateVars;
 	realtype *ydots;
@@ -16,19 +52,48 @@ int rhs( realtype t, N_Vector y, N_Vector ydot, void *f_data ) {
 	ydots = NV_DATA_S(ydot);
 
 	
-	/*Parameters:*/
-	a1  =data->p[0];
-	a2  =data->p[1];
-	alf =data->p[2];
+	p1 =data->p[0];
+	p2 =data->p[1];
+	p3 =data->p[2];
+	x1 =stateVars[0];
+	x2 =stateVars[1];
+	u1 =data->u[0];
+	c1 =1;
 	
-	rho     =2;
-	order   =24;
+	temp1 =u1 -p1 *x1;
+	temp2 =p2 *x2;
 	
-	ydots[0]      = (a1 / (1 +a2 *intPow(stateVars[23],rho) ) ) -alf *stateVars[0];
+	ydots[0] =temp1 +temp2;
+	ydots[1] =p1 *x1 -addTwo((p3/c1),p2) *x2;
 	
-	for(k1=1;k1<=order;k1++){
-	ydots[(1 +k1 ) -1] =data->p[(4 +k1 ) -1] *stateVars[(1 +k1 -1 ) -1] -alf *stateVars[(1 +k1 ) -1];
-	}
+	
+	/**/
+	/*Joep Vanlier, 2011*/
+	/**/
+	/*Licensing:*/
+	/*Copyright (C) 2009-2011 Joep Vanlier. All rights*/
+	/*reserved.*/
+	/**/
+	/*Contact:joep.vanlier@gmail.com*/
+	/**/
+	/*This file is part of the puaMAT.*/
+	/**/
+	/*puaMAT is free software: you can redistribute it*/
+	/*and/or modify it under the terms of the GNU General*/
+	/*Public License as published by the Free Software*/
+	/*Foundation, either version 3 of the License, or (at*/
+	/*your option) any later version.*/
+	/**/
+	/*puaMAT is distributed in the hope that it will be*/
+	/*useful, but WITHOUT ANY WARRANTY; without even the*/
+	/*implied warranty of MERCHANTABILITY or FITNESS FOR A*/
+	/*PARTICULAR PURPOSE.  See the GNU General Public*/
+	/*License for more details.*/
+	/**/
+	/*You should have received a copy of the GNU General*/
+	/*Public License along with puaMAT.  If not, see*/
+	/*http://www.gnu.org/licenses/*/
+	/**/
 
 
 	#ifdef NON_NEGATIVE
@@ -38,65 +103,26 @@ int rhs( realtype t, N_Vector y, N_Vector ydot, void *f_data ) {
 	#endif
 
 };
-int fJac (long int N, realtype t, N_Vector y, N_Vector fy, DlsMat Jac, void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3) {
+int sensRhs (int Ns, realtype t, N_Vector y, N_Vector ydot, N_Vector *yS, N_Vector *ySdot, void *user_data, N_Vector tmp1, N_Vector tmp2) {
 
-
+realtype t1;realtype t2;
 
 struct mData *data = ( struct mData * ) user_data;
 realtype *stateVars;
 stateVars = NV_DATA_S(y);
 
 
-DENSE_COL(Jac,0)[0] = -data->p[2];
-DENSE_COL(Jac,0)[1] = data->p[4];
-DENSE_COL(Jac,1)[1] = -data->p[2];
-DENSE_COL(Jac,1)[2] = data->p[5];
-DENSE_COL(Jac,2)[2] = -data->p[2];
-DENSE_COL(Jac,2)[3] = data->p[6];
-DENSE_COL(Jac,3)[3] = -data->p[2];
-DENSE_COL(Jac,3)[4] = data->p[7];
-DENSE_COL(Jac,4)[4] = -data->p[2];
-DENSE_COL(Jac,4)[5] = data->p[8];
-DENSE_COL(Jac,5)[5] = -data->p[2];
-DENSE_COL(Jac,5)[6] = data->p[9];
-DENSE_COL(Jac,6)[6] = -data->p[2];
-DENSE_COL(Jac,6)[7] = data->p[10];
-DENSE_COL(Jac,7)[7] = -data->p[2];
-DENSE_COL(Jac,7)[8] = data->p[11];
-DENSE_COL(Jac,8)[8] = -data->p[2];
-DENSE_COL(Jac,8)[9] = data->p[12];
-DENSE_COL(Jac,9)[9] = -data->p[2];
-DENSE_COL(Jac,9)[10] = data->p[13];
-DENSE_COL(Jac,10)[10] = -data->p[2];
-DENSE_COL(Jac,10)[11] = data->p[14];
-DENSE_COL(Jac,11)[11] = -data->p[2];
-DENSE_COL(Jac,11)[12] = data->p[15];
-DENSE_COL(Jac,12)[12] = -data->p[2];
-DENSE_COL(Jac,12)[13] = data->p[16];
-DENSE_COL(Jac,13)[13] = -data->p[2];
-DENSE_COL(Jac,13)[14] = data->p[17];
-DENSE_COL(Jac,14)[14] = -data->p[2];
-DENSE_COL(Jac,14)[15] = data->p[18];
-DENSE_COL(Jac,15)[15] = -data->p[2];
-DENSE_COL(Jac,15)[16] = data->p[19];
-DENSE_COL(Jac,16)[16] = -data->p[2];
-DENSE_COL(Jac,16)[17] = data->p[20];
-DENSE_COL(Jac,17)[17] = -data->p[2];
-DENSE_COL(Jac,17)[18] = data->p[21];
-DENSE_COL(Jac,18)[18] = -data->p[2];
-DENSE_COL(Jac,18)[19] = data->p[22];
-DENSE_COL(Jac,19)[19] = -data->p[2];
-DENSE_COL(Jac,19)[20] = data->p[23];
-DENSE_COL(Jac,20)[20] = -data->p[2];
-DENSE_COL(Jac,20)[21] = data->p[24];
-DENSE_COL(Jac,21)[21] = -data->p[2];
-DENSE_COL(Jac,21)[22] = data->p[25];
-DENSE_COL(Jac,22)[22] = -data->p[2];
-DENSE_COL(Jac,22)[23] = data->p[26];
-DENSE_COL(Jac,23)[0] = data->p[0]*data->p[1]*stateVars[23]*1.0/pow(data->p[1]*(stateVars[23]*stateVars[23])+1.0,2.0)*-2.0;
-DENSE_COL(Jac,23)[23] = -data->p[2];
-DENSE_COL(Jac,23)[24] = data->p[27];
-DENSE_COL(Jac,24)[24] = -data->p[2];
+t2 = data->p[1]+data->p[2];
+NV_DATA_S(ySdot[0])[0] = -stateVars[0]-data->p[0]*NV_DATA_S(yS[0])[0]+data->p[1]*NV_DATA_S(yS[0])[1];
+NV_DATA_S(ySdot[0])[1] = stateVars[0]+data->p[0]*NV_DATA_S(yS[0])[0]-NV_DATA_S(yS[0])[1]*t2;
+NV_DATA_S(ySdot[1])[0] = stateVars[1]-data->p[0]*NV_DATA_S(yS[1])[0]+data->p[1]*NV_DATA_S(yS[1])[1];
+NV_DATA_S(ySdot[1])[1] = -stateVars[1]+data->p[0]*NV_DATA_S(yS[1])[0]-NV_DATA_S(yS[1])[1]*t2;
+NV_DATA_S(ySdot[2])[0] = -data->p[0]*NV_DATA_S(yS[2])[0]+data->p[1]*NV_DATA_S(yS[2])[1];
+NV_DATA_S(ySdot[2])[1] = -stateVars[1]+data->p[0]*NV_DATA_S(yS[2])[0]-NV_DATA_S(yS[2])[1]*t2;
+NV_DATA_S(ySdot[3])[0] = -data->p[0]*NV_DATA_S(yS[3])[0]+data->p[1]*NV_DATA_S(yS[3])[1];
+NV_DATA_S(ySdot[3])[1] = data->p[0]*NV_DATA_S(yS[3])[0]-NV_DATA_S(yS[3])[1]*t2;
+NV_DATA_S(ySdot[4])[0] = -data->p[0]*NV_DATA_S(yS[4])[0]+data->p[1]*NV_DATA_S(yS[4])[1];
+NV_DATA_S(ySdot[4])[1] = data->p[0]*NV_DATA_S(yS[4])[0]-NV_DATA_S(yS[4])[1]*t2;
 
 return 0;
 };

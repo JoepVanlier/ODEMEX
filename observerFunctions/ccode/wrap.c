@@ -1,8 +1,6 @@
 
 #include "jac.h"
 #include "objfn.h"
-//#include "time.h"
-//%#include "string.h"
 
 int sensitivities;
 
@@ -11,7 +9,6 @@ void mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
   sensitivities = 0;
   
   if (nrhs == 0) {
-      //printf( "Call function as:\ny = funcName(x0)\n", N_STATES, N_PARAMS, N_INPUTS );
       return;
   }
    

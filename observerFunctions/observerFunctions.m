@@ -216,7 +216,7 @@ fprintf( fid, '#include "objfn.h"\n\n\nvoid objectiveFn(double *obs, double *s, 
 fid         = fclose( fid );
 
 fid = fopen( [observPath 'ccode/objfn.h'], 'w' );
-fprintf( fid, '\n#include "mex.h"\n\n#define N_DATA %d\n#define N_INPUT %d\n#define N_PARS %d\n#define N_STATES %d\n#define N_OBSPARS %d\n#define N_ICPARS %d\n#define N_OBS %d\n#define N_TIME %d\n#define SENSDIM %d\n\nvoid objectiveFn(double *obj, double *s, double *p, double *d, double *u );\n\n', nData, nInput, nPars, nStates, nObsPars, nIcPars, nObs, nTime, nStates * ( nStates + nPars ) );
+fprintf( fid, '\n#include "mex.h"\n#include "math.h"\n\n#define N_DATA %d\n#define N_INPUT %d\n#define N_PARS %d\n#define N_STATES %d\n#define N_OBSPARS %d\n#define N_ICPARS %d\n#define N_OBS %d\n#define N_TIME %d\n#define SENSDIM %d\n\nvoid objectiveFn(double *obj, double *s, double *p, double *d, double *u );\n\n', nData, nInput, nPars, nStates, nObsPars, nIcPars, nObs, nTime, nStates * ( nStates + nPars ) );
 fid = fclose(fid);
 
 if cjac == 1

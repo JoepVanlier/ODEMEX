@@ -29,6 +29,7 @@
 #include "dxdt.h"
 #include "time.h"
 #include "string.h"
+#include "math.h"
 
 const int numInputArgs  = 5;
 const int numOutputArgs = 1;

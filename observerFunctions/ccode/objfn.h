@@ -1,5 +1,6 @@
 
 #include "mex.h"
+#include "math.h"
 
 #define N_DATA 5
 #define N_INPUT 1

@@ -26,6 +26,7 @@
   http://www.gnu.org/licenses/
 */
 #include "ode.h"
+#include "math.h"
 #include "model/dxdtDefs.h"
 
 void        grabVectorFromMatlab( struct mVector *vector, const mxArray *prhs ) {

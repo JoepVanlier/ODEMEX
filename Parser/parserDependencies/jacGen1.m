@@ -62,6 +62,7 @@ if ( aJac == 1 )
 
     disp( 'Replacing state names' );
     c_file = regexprep( c_file, 'MatrixWithNoName\[(\d*)\]', 'NV_DATA_S(ySdot[$1])' );
+    c_file = regexprep( c_file, 'A0\[(\d*)\]', 'NV_DATA_S(ySdot[$1])' );
     c_file = regexprep( c_file, 'p_(\d*)', 'data->p[$1]' );
     c_file = regexprep( c_file, 'u_(\d*)', 'data->u[$1]' );
     c_file = regexprep( c_file, 'x_(\d*)', 'stateVars[$1]' );

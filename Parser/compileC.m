@@ -33,7 +33,7 @@ function compileC( outputName, IDA )
         if ~isunix
             eval(sprintf('mex %s COMPFLAGS="$COMPFLAGS %s" -output "%s" -I"%s" "%s" "%s" "%s" "%s%s"', extraflags, flags, outputName, [compilerPath '/CVode/cv_src/include'], [compilerPath '/outputC/mexG.c'], [compilerPath '/outputC/ode.c'], [compilerPath '/outputC/model/dxdt.c'], [compilerPath '/CVode/lib/'], libraryName ) );    
         else
-			eval(sprintf('mex %s CLIBS="\\$CLIBS -L./" COMPFLAGS="\\$COMPFLAGS %s -fPIC" -output "%s" -I"%s" "%s" "%s" "%s" "%s%s"', extraflags, flags, outputName, [compilerPath '/CVode/cv_src/include'], [compilerPath '/outputC/mexG.c'], [compilerPath '/outputC/ode.c'], [compilerPath '/outputC/model/dxdt.c'], [compilerPath '/CVode/lib/'], libraryName ) );
+			eval(sprintf('mex %s COMPFLAGS="\\$COMPFLAGS %s -fPIC" -output "%s" -I"%s" "%s" "%s" "%s" "%s%s"', extraflags, flags, outputName, [compilerPath '/CVode/cv_src/include'], [compilerPath '/outputC/mexG.c'], [compilerPath '/outputC/ode.c'], [compilerPath '/outputC/model/dxdt.c'], [compilerPath '/CVode/lib/'], libraryName ) );
         end
     else
         eval( 'chooseCompiler' );

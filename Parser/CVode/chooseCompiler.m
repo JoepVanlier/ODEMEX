@@ -42,6 +42,7 @@ if ( compiler == 2 )
     % If you use MSVC, adjust these to the appropriate location (if necessary) \/
     cc          = mex.getCompilerConfigurations('C++','Selected');
     vsroot      = cc.Location;
+    netroot     = 'c:\Windows\Microsoft.NET\';
     
     %  \/ Base your choice of optimisations here
     %* P2: G6 is fastest (official builds are G6)

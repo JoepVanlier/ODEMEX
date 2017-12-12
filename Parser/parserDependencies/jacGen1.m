@@ -74,9 +74,9 @@ if ( fJac == 1 )
     disp( 'Replacing state names' );
     c_file = regexprep( c_file, 'MatrixWithNoName\[(\d*)\]', 'DENSE_COL(Jac,$1)' );
     c_file = regexprep( c_file, 'A0\[(\d*)\]', 'DENSE_COL(Jac,$1)' );
-    c_file = regexprep( c_file, 'p_(\d*)', 'data->p[$1]' );
-    c_file = regexprep( c_file, 'u_(\d*)', 'data->u[$1]' );
-    c_file = regexprep( c_file, 'x_(\d*)', 'stateVars[$1]' );
+    c_file = regexprep( c_file, 'p_(\d*)', 'data->p[$1-1]' );
+    c_file = regexprep( c_file, 'u_(\d*)', 'data->u[$1-1]' );
+    c_file = regexprep( c_file, 'x_(\d*)', 'stateVars[$1-1]' );
     c_file = regexprep( c_file, '^t0 = ', '' );
 
     fullstring = sprintf( '%s\n', c_file{:} );

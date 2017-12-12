@@ -93,7 +93,7 @@ if ( fJac == 1 )
         maxT = max( [ val, maxT ] );
     end
 
-    preString = sprintf('int fJac (long int N, realtype t, N_Vector y, N_Vector fy, DlsMat Jac, void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3) {\n\n');
+    preString = sprintf('int fJac (int N, realtype t, N_Vector y, N_Vector fy, DlsMat Jac, void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3) {\n\n');
     for a = 1 : maxT
         preString = sprintf( '%srealtype t%d;', preString, a );
     end

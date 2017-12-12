@@ -92,16 +92,15 @@ for it1 = 1 : length( dataPts )
     data(it1) = sym( sprintf( 'data_%d', it1 ) );
 end
 
-
-
 % Generate all required state syms
 disp( 'Generating syms for the states' );
-
 fields = fieldnames( mStruct.s );
+sSym=sym('s%d_%d', [length(fields), length(timePts)]);
 for it1 = 1 : length( fields )
     for it2 = 1 : length( timePts )
-        syms( sprintf( 's%d_%d', getfield( mStruct.s, fields{it1} ), it2 ) );
-        eval( sprintf( 's%d(%d) = s%d_%d;', getfield( mStruct.s, fields{it1} ), it2, getfield( mStruct.s, fields{it1} ), it2 ) );
+        s{ getfield( mStruct.s, fields{it1} ) }(it2) = sSym( getfield( mStruct.s, fields{it1} ), it2 );
+        %syms( sprintf( 's%d_%d', getfield( mStruct.s, fields{it1} ), it2 ) );
+        %eval( sprintf( 's%d(%d) = s%d_%d;', getfield( mStruct.s, fields{it1} ), it2, getfield( mStruct.s, fields{it1} ), it2 ) );
     end
 end
 
@@ -167,7 +166,7 @@ for c = 1 : length( obs )
                     case 2
                         token = sprintf( 'p(%d)', getfield( mStruct.p, allNames{q} ) );
                     case 3
-                        token = sprintf( 's%d', getfield( mStruct.s, allNames{q} ) );
+                        token = sprintf( 's{%d}', getfield( mStruct.s, allNames{q} ) );
                     case 4
                         token = sprintf( 'i(%d)', getfield( mStruct.i, allNames{q} ) );
                     case 5
@@ -230,12 +229,13 @@ if cjac == 1
     % dy2 dp2
     % Compute all the derivatives
     disp( 'Generating syms for all state derivatives output' );
-    S = sym( zeros( nStates * (nPars+nStates), length( timePts ) ) );
-    for a = 1 : length( timePts )
-        for b = 1 : nStates * ( nPars + nStates )
-            S( b, a ) = sym( sprintf( 'S_%d_%d', b, a ) );
-        end
-    end
+    S = sym('S_%d_%d', [ nStates * ( nPars + nStates ), length(timePts) ] );
+    %S = sym( zeros( nStates * (nPars+nStates), length( timePts ) ) );
+    %for a = 1 : length( timePts )
+    %    for b = 1 : nStates * ( nPars + nStates )
+    %        S( b, a ) = sym( sprintf( 'S_%d_%d', b, a ) );
+    %    end
+    %end
 
     disp( 'Constructing the Jacobian (model parameters)' );
     jac = sym( zeros( length( obj ), nPars + nObsPars + nIcPars ) );
@@ -248,21 +248,22 @@ if cjac == 1
             % do/dx dx/dp (based on model sensitivities)
             for c = 1 : nStates
                 index = ( nStates * (b-1) ) + c;
-                curJac = eval(sprintf( 'jacobian(obj(%d),s%d)', a, c ) );
+                %curJac = eval(sprintf( 'jacobian(obj(%d),s%d)', a, c ) );
+                curJac = jacobian(obj(a), s{c});
                 jac( a, b ) = jac( a, b ) + curJac * S(index,:).';
             end
 
             % Process partial derivatives directly with respect to the
             % parameters
             % do/dp
-            curJac = eval( sprintf( 'diff(obj(%d),p(%d))', a, b ) );
+            curJac = diff(obj(a),p(b));
             jac(a,b) = jac(a,b) + curJac;
         end
   
         % Objective function parameters (metapars)
         for b = 1 : nObsPars
             % Process derivatives w.r.t. parameters
-            curJac = eval( sprintf( 'diff(obj(%d),o(%d))', a, b ) );
+            curJac = diff(obj(a),o(b));
             jac(a,b+nPars) = jac(a,b+nPars) + curJac;
         end
 
@@ -272,7 +273,8 @@ if cjac == 1
             % do/dx dx/dp (based on model sensitivities)
             for c = 1 : nStates
                 index = ( nStates * (nPars+icPars(b)-1) ) + c;
-                curJac = eval(sprintf( 'jacobian(obj(%d),s%d)', a, c ) );
+                %curJac = eval(sprintf( 'jacobian(obj(%d),s%d)', a, c ) );
+                curJac = jacobian(obj(a),s{c});
                 jac( a, b+nPars+nObsPars ) = jac( a, b+nPars+nObsPars ) + curJac * S(index,:).';
             end
 

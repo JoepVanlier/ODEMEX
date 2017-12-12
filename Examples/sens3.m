@@ -10,7 +10,7 @@
     
     %% Compile without analytical Jacobian
     odeInput = 'MATLAB_models/mymodel2.m';
-    dependencies = { 'MATLAB_models/addtwo.m' };
+    dependencies = { 'MATLAB_models/addTwo.m' };
     
     options = cParserSet( 'blockSize', 5000, 'aJac', 0 );
     convertToC( mStruct, odeInput, dependencies, options );
@@ -18,7 +18,7 @@
     
     %% Compile with analytical Jacobian
     odeInput = 'MATLAB_models/mymodel2.m';
-    dependencies = { 'MATLAB_models/addtwo.m' };
+    dependencies = { 'MATLAB_models/addTwo.m' };
     
     options = cParserSet( 'blockSize', 5000, 'aJac', 1 );
     convertToC( mStruct, odeInput, dependencies, options );

@@ -1,10 +1,34 @@
 %% Mandatory Settings
 
 % compiler = 1;  % lccwin32
-compiler = 2; % msvc (recommended for windows)
-% compiler = 3; % GCC under windows
-% compiler = 4; % GCC under linux
+%compiler = 2; % msvc (recommended for windows)
+% compiler = 3; % msvc2017 (recommended for windows with newer MATLAB versions)
+% compiler = 4; % GCC under windows
+ compiler = 5; % GCC under linux
 
+% For newer versions of MATLAB that need to use MSVC2017; follow the
+% following instructions:
+%
+% Step 1.
+%
+%  Install Visual studio 2017 community. “Click on the Individual components 
+%  tab. Check the box for the latest Windows 10 SDK and VC++ 2017 toolset. 
+%  At the time of writing, this was Windows 10 SDK (10.0.14393.0) under SDKs, 
+%  libraries, and frameworks and VC++ 2017 v141 toolset (x86,x64) under 
+%  Compilers, build tools, and runtimes. Click the Modify button.” 
+%  An instruction can be found here: 
+%  https://www.mathworks.com/matlabcentral/answers/348269-how-do-i-set-up-microsoft-visual-studio-2017-for-slrt
+%
+%  Restart the computer.
+%
+% Step 2. 
+%  Set compiler to 3.
+%
+% Step 3.
+%  Add entire odemex folder with subfolder to matlab path, and run SetupCvode.m. 
+%  CVODE.lib file should be generated in the folder \odemex\Parser\CVode\lib.
+%  Add entire odemex folder with subfolder to matlab path again.
+%
 % Don't forget to call mex -setup when you switch compiler (not needed for
 % GCC)
 
@@ -12,7 +36,6 @@ lapack              = 'libmwlapack.lib';
 blas                = 'libmwblas.lib';
 
 %% Common Settings
-
 lccLocation         = [ matlabroot '/sys/lcc' ];
 
 [junk,parserDir]    = strtok( fliplr( fileparts( mfilename( 'fullpath' ) ) ), '/\' );
@@ -75,8 +98,47 @@ if ( compiler == 2 )
     extraflags          = ' ';
 end
 
-%% GCC --> Win
+%% Microsoft Visual C++ 2017
 if ( compiler == 3 )
+    
+    % If you use MSVC, adjust these to the appropriate location (if necessary) \/
+    cc          = mex.getCompilerConfigurations('C++','Selected');
+    vsroot      = cc.Location;
+    netroot     = 'c:\Windows\Microsoft.NET\';
+    
+    %  \/ Base your choice of optimisations here
+    %* P2: G6 is fastest (official builds are G6)
+    %* P3: G6 SSE is fastest
+    %* P4: G7 SSE2 is fastest
+    %* Celeron: Depends on whether your Celeron is P2-based, P3-based, or P4-based.
+    %* Athlon XP: G7 may be faster than G7 SSE even though SSE is supported
+    %
+    % O2 means optimise for performance, not space!
+    %
+    % -ffast-math very fast math, b
+    flags = '-O2 '; % /fp:strict'; 
+    
+    
+    % Don't set these unless you're having trouble \/
+    compilerLocation    = [ vsroot '\VC' ];
+    if strcmp(computer, 'PCWIN')
+        algebraDir          = [ matlabroot '\extern\lib\win32\microsoft' ];
+    else
+        if strcmp(computer, 'PCWIN64')
+            algebraDir          = [ matlabroot '\extern\lib\win64\microsoft' ];    
+        else
+            disp( 'WARNING: Could not identify computer. Cannot link against lapack/BLAS' );
+        end
+    end
+    lapack              = [ algebraDir '\' lapack ];
+    blas                = [ algebraDir '\' blas ]; 
+    libraryName         = 'CVODE.lib';
+    idaName         	= 'IDA.lib';
+    extraflags          = ' ';
+end
+
+%% GCC --> Win
+if ( compiler == 4 )
     
     % To use the GCC compiler, obtain GNUMEX from
     % http://gnumex.sourceforge.net/
@@ -106,7 +168,7 @@ if ( compiler == 3 )
 end
 
 %% GCC --> For deployment on Linux stations!
-if ( compiler == 4 )
+if ( compiler == 5 )
     
     % To use the GCC compiler, obtain GNUMEX from
     % http://gnumex.sourceforge.net/

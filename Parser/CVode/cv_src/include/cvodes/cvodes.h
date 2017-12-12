@@ -1959,7 +1959,8 @@ SUNDIALS_EXPORT int CVodeGetAdjDataPointPolynomial(void *cvode_mem, long int whi
 
 SUNDIALS_EXPORT int CVodeGetAdjCurrentCheckPoint(void *cvode_mem, void **addr);
 
-
+/* Added by Joep */
+SUNDIALS_EXPORT int CVodeSetMaxTime( void *cvode_mem, double maxTime );
 
 #ifdef __cplusplus
 }

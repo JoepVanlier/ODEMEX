@@ -25,6 +25,11 @@
   Public License along with puaMAT.  If not, see
   http://www.gnu.org/licenses/
 */
+#include <cvodes/cvodes.h>           /* CVODES functions */
+#include <cvodes/cvodes_dense.h>     /* Header file for the dense solver */
+#include <nvector/nvector_serial.h>  /* NVector definitions  */
+#include <sundials/sundials_types.h> /* Realtype */
+#include <sundials/sundials_math.h>  /* Abs */
 #include "ode.h"
 #include "dxdt.h"
 #include "time.h"

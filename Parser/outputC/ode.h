@@ -64,7 +64,7 @@ struct mData {
 void        grabVectorFromMatlab( struct mVector *vector, const mxArray *prhs );
 void        handleError( void *cvode_mem, N_Vector y0, int flag, mxArray *plhs[], int nrhs, int sensitivity, N_Vector *yS0, realtype *sensitivities, struct mData *data );
 void        memErr( void *cvode_mem, N_Vector y0, void *pOld, const char *msg );
-realtype   *reAllocate2DOutputMemory( realtype *pMem, void *cvode_mem, N_Vector y0, mxArray *plhs, int dim1, int dim2 );
+realtype   *reAllocate2DOutputMemory( realtype *pMem, void *cvode_mem, N_Vector y0, mxArray *plhs, mwSize dim1, mwSize dim2 );
 
 realtype    interpolate( realtype *time, realtype *data, int n, realtype t, int type );
 realtype    maximum( realtype x, realtype y );

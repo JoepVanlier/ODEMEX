@@ -11,7 +11,7 @@
     
     %% Custom options 
     odeInput = 'MATLAB_models/mymodel2.m';
-    dependencies = { 'MATLAB_models/addtwo.m' };
+    dependencies = { 'MATLAB_models/addTwo.m' };
     
     options = cParserSet( 'blockSize', 5000 );
     convertToC( mStruct, odeInput, dependencies, options );

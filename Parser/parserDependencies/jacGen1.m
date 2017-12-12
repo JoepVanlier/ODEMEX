@@ -35,17 +35,20 @@ m_file = textread( odeInput, '%s', 'delimiter', '\n' );
 m_file = sprintf( '%s\n', m_file{2:end} );
 eval( m_file );
 
-for a = 1 : nStates
-    for b = 1 : nStates
-        dfdy( b, a ) = diff( dx(a), x(b) );
-    end
-end
+% Old code
+% for a = 1 : nStates
+%     for b = 1 : nStates
+%         dfdy( b, a ) = diff( dx(a), x(b) );
+%     end
+% end
+% for a = 1 : nStates
+%     for b = 1 : nPars
+%         dfdp( a, b ) = diff( dx(a), p(b) );
+%     end
+% end
 
-for a = 1 : nStates
-    for b = 1 : nPars
-        dfdp( a, b ) = diff( dx(a), p(b) );
-    end
-end
+dfdy = jacobian(dx, x).';
+dfdp = jacobian(dx, p);
 
 for a = 1 : nStates
     dfdp( a, a+nPars ) = 0;

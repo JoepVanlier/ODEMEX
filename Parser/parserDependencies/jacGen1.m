@@ -6,7 +6,11 @@ jacFileName = [ parserPath '/outputC/model/aJac.c' ];
 
 disp( 'Computing RHS derivatives ...' );
 x = sym('x_%d', [1, nStates]);
-u = sym('u_%d', [1, numel( fieldnames( mStruct.u ))]);
+if isfield( mStruct, 'u' )
+    u = sym('u_%d', [1, numel( fieldnames( mStruct.u ))]);
+else
+    u = sym([]);
+end
 S = sym('s_%d_%d', [nStates + nPars, nStates]).';
 p = sym('p_%d', [nPars,1]).';
 

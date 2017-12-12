@@ -43,7 +43,7 @@ while( nLen < len )
     nLen = length( names );
 end
 
-if ( compiler < 3 )
+if ( compiler < 4 )
     % Compile the CVode source files!
     eval( sprintf( 'mex -v -c -O -outdir ''%s/tmp'' -I''%s/cv_src/include/'' %s COMPFLAGS="$COMPFLAGS %s"', cvodeDir, sourceDir, names, flags ) );
 %    eval( sprintf( 'mex %s -v -c -outdir ''%s/tmp'' -I''%s/cv_src/include/'' ''%s'' COMPFLAGS="$COMPFLAGS %s" "%s" "%s"', extraflags, cvodeDir, sourceDir, names, flags, lapack, blas ) );
@@ -87,8 +87,32 @@ if compiler == 2
     rmdir( [ cvodeDir '/tmp' ] )
 end
 
-% GCC win
+% MSVC 2017
 if compiler == 3
+    disp( 'Compiler: Microsoft Visual C++ 2017' )
+
+    curDir = pwd;
+    %cd( [ compilerLocation '\bin\'] )
+    
+    p = [ sprintf( 'PATH=%s\\Common7\\IDE;%s\\VC\\Tools\\MSVC\\14.12.25827\\bin\\Hostx64\\x64;%s\\Common7\\Tools;%s\\Framework\\v3.5;%s\\Framework\\v2.0.50727;%s\\VC\\VCPackages\nlib "%s\\tmp\\*.obj" /OUT:"%s\\lib\\%s"\ncd\n', vsroot, vsroot, vsroot, netroot, netroot, vsroot, curDir, curDir, libraryName ) ];
+    
+    %fid = fopen( [ compilerLocation '\bin\mslibmaker.bat' ], 'w' );
+    %    fprintf( fid, '%s\n', p );
+    %fclose( fid );  
+    
+    fid = fopen( [ 'mslibmaker.bat' ], 'w' );
+        fprintf( fid, '%s\n', p );
+    fclose( fid );  
+
+    dos( 'mslibmaker', '-echo' );
+    delete mslibmaker.bat;
+
+    delete( [ cvodeDir '/tmp/*.obj' ] );
+    rmdir( [ cvodeDir '/tmp' ] )
+end
+
+% GCC win
+if compiler == 4
     eval( sprintf( 'mex %s -v -c -outdir ''%s/tmp'' -I''%s/cv_src/include/'' ''%s'' COMPFLAGS="$COMPFLAGS %s" "%s" "%s"', extraflags, cvodeDir, sourceDir, names, flags, lapack, blas ) );
 
     clear names, tmp;
@@ -120,7 +144,7 @@ if compiler == 3
 end
 
 % GCC linux
-if compiler == 4
+if compiler == 5
     eval( strrep( strcat( sprintf( 'mex %s -v -c -outdir ''%s/tmp'' -I''%s/cv_src/include/'' %s CFLAGS="$CFLAGS -fPIC %s"', extraflags, cvodeDir, sourceDir, names, flags ) ), sprintf( '\n' ), ' ' ) );
 
     clear names;
@@ -140,30 +164,6 @@ if compiler == 4
     delete( [ cvodeDir '/tmp/*.o' ] );
     rmdir( [ cvodeDir '/tmp' ] )
 
-end
-
-% MSVC 2017
-if compiler == 5
-    disp( 'Compiler: Microsoft Visual C++ 2017' )
-
-    curDir = pwd;
-    %cd( [ compilerLocation '\bin\'] )
-    
-    p = [ sprintf( 'PATH=%s\\Common7\\IDE;%s\\VC\\Tools\\MSVC\\14.12.25827\\bin\\Hostx64\\x64;%s\\Common7\\Tools;%s\\Framework\\v3.5;%s\\Framework\\v2.0.50727;%s\\VC\\VCPackages\nlib "%s\\tmp\\*.obj" /OUT:"%s\\lib\\%s"\ncd\n', vsroot, vsroot, vsroot, netroot, netroot, vsroot, curDir, curDir, libraryName ) ];
-    
-    %fid = fopen( [ compilerLocation '\bin\mslibmaker.bat' ], 'w' );
-    %    fprintf( fid, '%s\n', p );
-    %fclose( fid );  
-    
-    fid = fopen( [ 'mslibmaker.bat' ], 'w' );
-        fprintf( fid, '%s\n', p );
-    fclose( fid );  
-
-    dos( 'mslibmaker', '-echo' );
-    delete mslibmaker.bat;
-
-    delete( [ cvodeDir '/tmp/*.obj' ] );
-    rmdir( [ cvodeDir '/tmp' ] )
 end
 
 

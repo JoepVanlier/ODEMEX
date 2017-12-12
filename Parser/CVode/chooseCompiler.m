@@ -1,10 +1,10 @@
 %% Mandatory Settings
 
 % compiler = 1;  % lccwin32
-%compiler = 2; % msvc (recommended for windows)
+compiler = 2; % msvc (recommended for windows)
 % compiler = 3; % msvc2017 (recommended for windows with newer MATLAB versions)
 % compiler = 4; % GCC under windows
- compiler = 5; % GCC under linux
+% compiler = 5; % GCC under linux
 
 % For newer versions of MATLAB that need to use MSVC2017; follow the
 % following instructions:

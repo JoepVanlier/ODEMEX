@@ -5,47 +5,15 @@ eval( sprintf( '%s = mStruct;', structVar ) );
 jacFileName = [ parserPath '/outputC/model/aJac.c' ];
 
 disp( 'Computing RHS derivatives ...' );
-for a = 1 : nStates
-    eval( sprintf( 'syms x_%d;', a - 1 ) );
-    eval( sprintf( 'x(%d) = x_%d;', a, a - 1 ) );
-end
-
-try
-    for a = 1 : length( fieldnames( mStruct.u ) )
-        eval( sprintf( 'syms u_%d;', a - 1 ) );
-        eval( sprintf( 'u(%d) = u_%d;', a, a - 1 ) );
-    end
-catch
-end
-
-for a = 1 : nStates + nPars
-    for b = 1 : nStates
-        eval( sprintf( 'syms s_%d_%d;', a - 1 , b - 1 ) );
-        eval( sprintf( 'S(%d, %d) = s_%d_%d;', b, a, a - 1, b - 1) );
-    end
-end
-
-for a = 1 : nPars
-    eval( sprintf( 'syms p_%d;', a - 1 ) );
-    eval( sprintf( 'p(%d) = p_%d;', a, a - 1 ) );
-end
+x = sym('x_%d', [1, nStates]);
+u = sym('u_%d', [1, numel( fieldnames( mStruct.u ))]);
+S = sym('s_%d_%d', [nStates + nPars, nStates]).';
+p = sym('p_%d', [nPars,1]).';
 
 m_file = textread( odeInput, '%s', 'delimiter', '\n' );
 
 m_file = sprintf( '%s\n', m_file{2:end} );
 eval( m_file );
-
-% Old code
-% for a = 1 : nStates
-%     for b = 1 : nStates
-%         dfdy( b, a ) = diff( dx(a), x(b) );
-%     end
-% end
-% for a = 1 : nStates
-%     for b = 1 : nPars
-%         dfdp( a, b ) = diff( dx(a), p(b) );
-%     end
-% end
 
 dfdy = jacobian(dx, x).';
 dfdp = jacobian(dx, p);
@@ -66,10 +34,10 @@ if ( aJac == 1 )
     disp( 'Replacing state names' );
     c_file = regexprep( c_file, 'MatrixWithNoName\[(\d*)\]', 'NV_DATA_S(ySdot[$1])' );
     c_file = regexprep( c_file, 'A0\[(\d*)\]', 'NV_DATA_S(ySdot[$1])' );
-    c_file = regexprep( c_file, 'p_(\d*)', 'data->p[$1]' );
-    c_file = regexprep( c_file, 'u_(\d*)', 'data->u[$1]' );
-    c_file = regexprep( c_file, 'x_(\d*)', 'stateVars[$1]' );
-    c_file = regexprep( c_file, 's_(\d*)_(\d*)', 'NV_DATA_S(yS[$1])[$2]' );
+    c_file = regexprep( c_file, 'p_(\d*)', 'data->p[$1-1]' );
+    c_file = regexprep( c_file, 'u_(\d*)', 'data->u[$1-1]' );
+    c_file = regexprep( c_file, 'x_(\d*)', 'stateVars[$1-1]' );
+    c_file = regexprep( c_file, 's_(\d*)_(\d*)', 'NV_DATA_S(yS[$1-1])[$2-1]' );
     c_file = regexprep( c_file, '^t0 = ', '' );
 
     fullstring = sprintf( '%s\n', c_file{:} );

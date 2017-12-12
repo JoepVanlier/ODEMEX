@@ -142,6 +142,31 @@ if compiler == 4
 
 end
 
+% MSVC 2017
+if compiler == 5
+    disp( 'Compiler: Microsoft Visual C++ 2017' )
+
+    curDir = pwd;
+    %cd( [ compilerLocation '\bin\'] )
+    
+    p = [ sprintf( 'PATH=%s\\Common7\\IDE;%s\\VC\\Tools\\MSVC\\14.12.25827\\bin\\Hostx64\\x64;%s\\Common7\\Tools;%s\\Framework\\v3.5;%s\\Framework\\v2.0.50727;%s\\VC\\VCPackages\nlib "%s\\tmp\\*.obj" /OUT:"%s\\lib\\%s"\ncd\n', vsroot, vsroot, vsroot, netroot, netroot, vsroot, curDir, curDir, libraryName ) ];
+    
+    %fid = fopen( [ compilerLocation '\bin\mslibmaker.bat' ], 'w' );
+    %    fprintf( fid, '%s\n', p );
+    %fclose( fid );  
+    
+    fid = fopen( [ 'mslibmaker.bat' ], 'w' );
+        fprintf( fid, '%s\n', p );
+    fclose( fid );  
+
+    dos( 'mslibmaker', '-echo' );
+    delete mslibmaker.bat;
+
+    delete( [ cvodeDir '/tmp/*.obj' ] );
+    rmdir( [ cvodeDir '/tmp' ] )
+end
+
+
 %
 % Joep Vanlier, 2011
 %

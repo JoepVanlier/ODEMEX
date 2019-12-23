@@ -19,19 +19,6 @@ for q = 1 : length( list )
     end
 end
 
-% for q = 1 : length( list )
-%     tmp = ls( sprintf( '%s/cv_src/src/%s/*.c', sourceDir, list{q}  ) );
-%     % Under Windows we need to add the directory name
-%     % under linux this is already done.
-%     if ~isunix
-%         tmp = [ repmat( sprintf( '%s/cv_src/src/%s/', sourceDir, list{q} ), size( tmp, 1 ), 1 ), tmp, repmat( ' ', size( tmp, 1 ), 1 )];
-%     end
-%     
-%     [a, b] = size(tmp);
-%     
-%     names = [ names '  ' reshape( tmp.', 1, a*b ) ];
-% end
-
 % Get rid of extra spaces since the compiler seems to dislike these.
 nLen = 1;
 len = length( names );
@@ -68,13 +55,8 @@ if compiler == 2
     disp( 'Compiler: Microsoft Visual C++' )
 
     curDir = pwd;
-    %cd( [ compilerLocation '\bin\'] )
     
     p = [ sprintf( 'PATH=%s\\Common7\\IDE;%s\\VC\\BIN;%s\\Common7\\Tools;%s\\Framework\\v3.5;%s\\Framework\\v2.0.50727;%s\\VC\\VCPackages\nlib "%s\\tmp\\*.obj" /OUT:"%s\\lib\\%s"\ncd\n', vsroot, vsroot, vsroot, netroot, netroot, vsroot, curDir, curDir, libraryName ) ];
-    
-    %fid = fopen( [ compilerLocation '\bin\mslibmaker.bat' ], 'w' );
-    %    fprintf( fid, '%s\n', p );
-    %fclose( fid );  
     
     fid = fopen( [ 'mslibmaker.bat' ], 'w' );
         fprintf( fid, '%s\n', p );
@@ -92,13 +74,8 @@ if compiler == 3
     disp( 'Compiler: Microsoft Visual C++ 2017' )
 
     curDir = pwd;
-    %cd( [ compilerLocation '\bin\'] )
-    
-    p = [ sprintf( 'PATH=%s\\Common7\\IDE;%s\\VC\\Tools\\MSVC\\14.12.25827\\bin\\Hostx64\\x64;%s\\Common7\\Tools;%s\\Framework\\v3.5;%s\\Framework\\v2.0.50727;%s\\VC\\VCPackages\nlib "%s\\tmp\\*.obj" /OUT:"%s\\lib\\%s"\ncd\n', vsroot, vsroot, vsroot, netroot, netroot, vsroot, curDir, curDir, libraryName ) ];
-    
-    %fid = fopen( [ compilerLocation '\bin\mslibmaker.bat' ], 'w' );
-    %    fprintf( fid, '%s\n', p );
-    %fclose( fid );  
+    versionName = dir([vsroot '\\VC\\Tools\\MSVC\\']);
+    p = [ sprintf( 'PATH=%s\\Common7\\IDE;%s\\VC\\Tools\\MSVC\\%s\\bin\\Hostx64\\x64;%s\\Common7\\Tools;%s\\Framework\\v3.5;%s\\Framework\\v2.0.50727;%s\\VC\\VCPackages\nlib "%s\\tmp\\*.obj" /OUT:"%s\\lib\\%s"\ncd\n', vsroot, vsroot, versionName(end).name, vsroot, netroot, netroot, vsroot, curDir, curDir, libraryName ) ];
     
     fid = fopen( [ 'mslibmaker.bat' ], 'w' );
         fprintf( fid, '%s\n', p );
